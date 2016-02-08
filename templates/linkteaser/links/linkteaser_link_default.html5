@@ -1,0 +1,9 @@
+<?php if ($this->showMore): ?>
+	<?php if($this->linkAll): ?>
+		<span class="<?=$this->linkClass; ?>"><?= $GLOBALS['TL_LANG']['MSC']['more']; ?><span class="invisible"><?= $this->link; ?></span></span>
+	<?php else: ?>
+		<a href="<?php echo $this->href; ?>" title="<?= $this->linkTitle; ?>" class="<?=$this->linkClass; ?>"<?= $this->target; ?>>
+			<?php echo $this->link; ?>
+		</a>
+	<?php endif; ?>
+<?php endif; ?>

@@ -1,0 +1,20 @@
+<?php if ($this->addImage): ?>
+	<div class="image_container image_background">
+		<div class="background" style="background-image: url(<?= $this->picture['img']['src']; ?>)"></div>
+		<?php if ($this->caption): ?>
+			<figcaption class="caption"><?= $this->caption ?></figcaption>
+		<?php endif; ?>
+	</div>
+<?php endif; ?>
+
+<div class="content<?= ($this->showMore) ? ' show-more' : ''; ?>">
+	<div class="inside">
+		<?php if ($this->headline): ?>
+			<h4><?php echo $this->headline; ?></h4>
+		<?php endif; ?>
+		<div class="teaser">
+			<?php echo $this->text; ?>
+			<?php $this->insert('linkteaser_link_default', $this->getData()); ?>
+		</div>
+	</div>
+</div>

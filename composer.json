@@ -1,0 +1,33 @@
+{
+    "name": "heimrichhannot/contao-teaser",
+    "description":"A contao teaser content element, that provides the ability to link the element with pages, articles, files, downloads or external urls.",
+    "keywords":["contao", "teaser", "content", "element"],
+    "type": "contao-module",
+    "homepage":"https://github.com/heimrichhannot/contao-teaser",
+    "license":"LGPL-3.0+",
+    "authors":[
+        {
+            "name":"Heimrich & Hannot",
+            "email":"digitales@heimrich-hannot.de",
+            "homepage":"http://www.heimrich-hannot.de",
+            "role":"Developer"
+        }
+    ],
+    "support":{
+        "issues":"https://github.com/heimrichhannot/contao-teaser/issues"
+    },
+    "require": {
+        "contao/core": ">=3.4,<4-dev",
+        "heimrichhannot/contao-haste_plus": ">=1.1,<2-dev"
+    },
+    "autoload": {
+        "classmap": [""]
+    },
+    "extra": {
+        "contao": {
+            "sources": {
+                "": "system/modules/teaser"
+            }
+        }
+    }
+}
