@@ -107,7 +107,6 @@ class ContentLinkTeaser extends \ContentText
 		$this->Template->linkTitle = $this->strTitle;
 		$this->Template->link = $this->strLink;
 		$this->Template->content = $this->generateContent();
-
 	}
 
 	/**
@@ -130,7 +129,7 @@ class ContentLinkTeaser extends \ContentText
 			default:
 				$strTemplate = 'linkteaser_content_image_above';
 		}
-
+		
 		// overwrite content template
 		if($this->teaserContentTemplate != '')
 		{
