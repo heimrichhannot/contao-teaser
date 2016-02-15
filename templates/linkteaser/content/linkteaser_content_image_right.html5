@@ -11,10 +11,19 @@
 </div>
 
 <?php if ($this->addImage): ?>
-	<div class="image_container image_background">
-		<div class="background" style="background-image: url(<?= $this->picture['img']['src']; ?>)"></div>
-		<?php if ($this->caption): ?>
-			<figcaption class="caption"><?= $this->caption ?></figcaption>
-		<?php endif; ?>
-	</div>
+	<?php if($this->background): ?>
+		<div class="image_container image_background">
+			<div class="background" style="background-image: url(<?= $this->picture['img']['src']; ?>)"></div>
+			<?php if ($this->caption): ?>
+				<figcaption class="caption"><?= $this->caption ?></figcaption>
+			<?php endif; ?>
+		</div>
+	<?php else: ?>
+		<figure class="image_container">
+			<?php $this->insert('picture_default', $this->picture); ?>
+			<?php if ($this->caption): ?>
+				<figcaption class="caption"><?= $this->caption; ?></figcaption>
+			<?php endif; ?>
+		</figure>
+	<?php endif; ?>
 <?php endif; ?>

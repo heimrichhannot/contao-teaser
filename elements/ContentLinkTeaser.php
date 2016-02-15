@@ -38,7 +38,6 @@ class ContentLinkTeaser extends \ContentText
 		parent::compile();
 
 		$this->generateLink();
-
 	}
 
 	/**
@@ -144,6 +143,8 @@ class ContentLinkTeaser extends \ContentText
 
 		$objT = new \FrontendTemplate($strTemplate);
 		$objT->setData($this->Template->getData());
+		// background images dont have width/height in backend view
+		$objT->background = (TL_MODE == 'BE' ? false : $objT->background);
 		return $objT->parse();
 	}
 
