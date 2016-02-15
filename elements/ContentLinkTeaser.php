@@ -107,6 +107,8 @@ class ContentLinkTeaser extends \ContentText
 		$this->Template->linkTitle = $this->strTitle;
 		$this->Template->link = $this->strLink;
 		$this->Template->content = $this->generateContent();
+
+		$this->addContainerClass($this->addImage ? 'has-image' : 'no-image');
 	}
 
 	/**
@@ -119,15 +121,19 @@ class ContentLinkTeaser extends \ContentText
 		{
 			case 'left':
 				$strTemplate = 'linkteaser_content_image_left';
+				$this->addContainerClass('float_left');
 				break;
 			case 'right':
 				$strTemplate = 'linkteaser_content_image_right';
+				$this->addContainerClass('float_right');
 				break;
 			case 'below':
 				$strTemplate = 'linkteaser_content_image_below';
+				$this->addContainerClass('float_below');
 				break;
 			default:
 				$strTemplate = 'linkteaser_content_image_above';
+				$this->addContainerClass('float_above');
 		}
 		
 		// overwrite content template
@@ -156,12 +162,20 @@ class ContentLinkTeaser extends \ContentText
 
 		$objTarget = $objTarget->loadDetails();
 
-		if($objTarget->domain != '' && $objTarget->domain != \Environment::get('host'))
+		if($objTarget->target || ($objTarget->domain != '' && $objTarget->domain != \Environment::get('host')))
 		{
 			$this->target = true;
 		}
-		
+
+
 		$this->strHref = \Controller::generateFrontendUrl($objTarget->row(), null, null, $this->target);
+
+		// remove alias from root pages
+		if($objTarget->type == 'root')
+		{
+			$this->strHref = str_replace($objTarget->alias, '', $this->strHref);
+		}
+
 		$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['pageTitle'], $objTarget->title);
 		$this->strLink = sprintf($this->strLink, $objTarget->title);
 
@@ -359,6 +373,10 @@ class ContentLinkTeaser extends \ContentText
 			case 'faq_url':
 				return sprintf('{{faq_title::%d}}', $arrTag[1]);
 		}
+	}
 
+	protected function addContainerClass($strClass)
+	{
+		$this->arrData['cssID'][1] .= ' '. $strClass;
 	}
 }

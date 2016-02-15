@@ -1,10 +1,10 @@
 <div class="content<?= ($this->showMore) ? ' show-more' : ''; ?>">
 	<div class="inside">
 		<?php if ($this->headline): ?>
-			<h4><?php echo $this->headline; ?></h4>
+			<h4><?= $this->headline; ?></h4>
 		<?php endif; ?>
 		<div class="teaser">
-			<?php echo $this->text; ?>
+			<?= $this->text; ?>
 			<?php $this->insert('linkteaser_link_default', $this->getData()); ?>
 		</div>
 	</div>
