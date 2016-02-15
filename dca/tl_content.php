@@ -54,7 +54,7 @@ $arrFields = array
 		'inputType'               => 'radio',
 		'options_callback'        => array('HeimrichHannot\Teaser\Backend\Content', 'getSourceOptions'),
 		'reference'               => &$GLOBALS['TL_LANG']['tl_content']['reference']['source'],
-		'eval'                    => array('submitOnChange'=>true, 'helpwizard'=>true),
+		'eval'                    => array('submitOnChange'=>true, 'helpwizard'=>true, 'mandatory' => true),
 		'sql'                     => "varchar(12) NOT NULL default ''"
 	),
 	'jumpTo' => array
