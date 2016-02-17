@@ -19,7 +19,7 @@
 <div class="content<?= ($this->showMore) ? ' show-more' : ''; ?>">
 	<div class="inside">
 		<?php if ($this->headline): ?>
-			<h4><?= $this->headline; ?></h4>
+			<<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
 		<?php endif; ?>
 		<div class="teaser">
 			<?= $this->text; ?>
