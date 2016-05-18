@@ -23,7 +23,7 @@
 		<?php endif; ?>
 		<div class="teaser">
 			<?= $this->text; ?>
-			<?php $this->insert('linkteaser_link_default', $this->getData()); ?>
+			<?php $this->insert($this->linkTemplate, $this->getData()); ?>
 		</div>
 	</div>
 </div>

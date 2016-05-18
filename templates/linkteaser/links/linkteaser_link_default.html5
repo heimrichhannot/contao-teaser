@@ -2,7 +2,7 @@
 	<?php if($this->linkAll): ?>
 		<span class="<?=$this->linkClass; ?>" title="<?= $this->linkTitle; ?>"><?= $this->link; ?></span>
 	<?php else: ?>
-		<a href="<?= $this->href; ?>" title="<?= $this->linkTitle; ?>" class="<?=$this->linkClass; ?>"<?= $this->target; ?>>
+		<a href="<?= $this->href; ?>" title="<?= $this->linkTitle; ?>" class="<?=$this->linkClass; ?>"<?= $this->target; ?><?= $this->linkAttributes; ?>>
 			<?= $this->link; ?>
 		</a>
 	<?php endif; ?>

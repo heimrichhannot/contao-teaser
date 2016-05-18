@@ -31,6 +31,10 @@ class ContentLinkTeaser extends \ContentText
 
 	protected $label;
 
+	protected $linkTemplate = 'linkteaser_link_default';
+
+	protected $arrLinkAttributes = array();
+
 	const LINK_CSS_CLASS = 'more';
 
 	protected function compile()
@@ -48,7 +52,7 @@ class ContentLinkTeaser extends \ContentText
 		global $objPage;
 
 		$this->label = $GLOBALS['TL_LANG']['MSC']['linkteaser']['teaserlinktext'][$this->teaserLinkText];
-		$this->strLink = is_array($this->label) ? $this->label[0] : $this->label;
+		$this->setLink(is_array($this->label) ? $this->label[0] : $this->label);
 
 		switch($this->source)
 		{
@@ -75,6 +79,17 @@ class ContentLinkTeaser extends \ContentText
 				$this->showMore = false;
 		}
 
+		// HOOK: extend teaser link by callback functions
+		if (isset($GLOBALS['TL_HOOKS']['generateTeaserLink']) && is_array($GLOBALS['TL_HOOKS']['generateTeaserLink']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['generateTeaserLink'] as $callback)
+			{
+				$showMore = \System::importStatic($callback[0])->{$callback[1]}($this, $this->showMore);
+			}
+
+			$this->showMore = $showMore;
+		}
+
 		if(!$this->showMore)
 		{
 			return false;
@@ -95,7 +110,7 @@ class ContentLinkTeaser extends \ContentText
 				$this->Template->showMore = true;
 		}
 
-		$this->Template->href = $this->strHref;
+		$this->Template->href = $this->getHref();
 		$this->Template->linkClass = static::LINK_CSS_CLASS . ($this->teaserLinkCssClass ? ' ' . $this->teaserLinkCssClass : '');
 
 		if($this->target)
@@ -103,9 +118,11 @@ class ContentLinkTeaser extends \ContentText
 			$this->Template->target = (($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"');
 		}
 
-		$this->Template->linkTitle = $this->strTitle;
-		$this->Template->link = $this->strLink;
+		$this->Template->linkTitle = $this->getTitle();
+		$this->Template->link = $this->getLink();
 		$this->Template->content = $this->generateContent();
+		$this->Template->linkTemplate = $this->getLinkTemplate();
+		$this->Template->linkAttributes = !empty($this->getLinkAttributes()) ? ' ' . $this->getLinkAttributes(true) : '';
 
 		$this->addContainerClass($this->addImage ? 'has-image' : 'no-image');
 	}
@@ -168,17 +185,16 @@ class ContentLinkTeaser extends \ContentText
 			$this->target = true;
 		}
 
-
-		$this->strHref = \Controller::generateFrontendUrl($objTarget->row(), null, null, $this->target);
+		$this->setHref(\Controller::generateFrontendUrl($objTarget->row(), null, null, $this->target));
 
 		// remove alias from root pages
 		if($objTarget->type == 'root')
 		{
-			$this->strHref = str_replace($objTarget->alias, '', $this->strHref);
+			$this->setHref(str_replace($objTarget->alias, '', $this->getHref()));
 		}
 
-		$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['pageTitle'], $objTarget->title);
-		$this->strLink = sprintf($this->strLink, $objTarget->title);
+		$this->setTitle(sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['pageTitle'], $objTarget->title));
+		$this->setLink(sprintf($this->getLink(), $objTarget->title));
 
 		return true;
 	}
@@ -198,9 +214,9 @@ class ContentLinkTeaser extends \ContentText
 
 		$arrMeta = $this->getMetaFromFile($objFile);
 
-		$this->strHref = $objFile->path;
-		$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['fileTitle'], $arrMeta['title']);
-		$this->strLink = sprintf($this->strLink, $arrMeta['title']);
+		$this->setHref($objFile->path);
+		$this->setTitle(sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['fileTitle'], $arrMeta['title']));
+		$this->setLink(sprintf($this->getLink(), $arrMeta['title']));
 
 		return true;
 	}
@@ -236,17 +252,17 @@ class ContentLinkTeaser extends \ContentText
 			\Controller::sendFileToBrowser($file);
 		}
 
-		$this->strHref = \Environment::get('request');
+		$this->setHref(\Environment::get('request'));
 		
 		// Remove an existing file parameter (see #5683)
-		if (preg_match('/(&(amp;)?|\?)file=/', $this->strHref))
+		if (preg_match('/(&(amp;)?|\?)file=/', $this->getHref()))
 		{
-			$this->strHref = preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $this->strHref);
+			$this->setHref(preg_replace('/(&(amp;)?|\?)file=[^&]+/', '', $this->getHref()));
 		}
 
-		$this->strHref .= ((\Config::get('disableAlias') || strpos($this->strHref, '?') !== false) ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFile->path);
-		$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['downloadTitle'], $arrMeta['title']);
-		$this->strLink = sprintf($this->strLink, $arrMeta['title']);
+		$this->setHref($this->getHref() . ((\Config::get('disableAlias') || strpos($this->getHref(), '?') !== false) ? '&amp;' : '?') . 'file=' . \System::urlEncode($objFile->path));
+		$this->setTitle(sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['downloadTitle'], $arrMeta['title']));
+		$this->setLink(sprintf($this->getLink(), $arrMeta['title']));
 
 		return true;
 	}
@@ -276,9 +292,9 @@ class ContentLinkTeaser extends \ContentText
 
 		$strParams = '/articles/' . ((!\Config::get('disableAlias') && $objArticle->alias != '') ? $objArticle->alias : $objArticle->id);
 
-		$this->strHref = ampersand(\Controller::generateFrontendUrl($objTarget->row(), $strParams, null, $this->target));
-		$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['articleTitle'], $objArticle->title);
-		$this->strLink = sprintf($this->strLink, $objArticle->title);
+		$this->setHref(ampersand(\Controller::generateFrontendUrl($objTarget->row(), $strParams, null, $this->target)));
+		$this->setTitle(sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['articleTitle'], $objArticle->title));
+		$this->setLink(sprintf($this->getLink(), $objArticle->title));
 
 		return true;
 	}
@@ -296,16 +312,16 @@ class ContentLinkTeaser extends \ContentText
 
 		if (substr($this->url, 0, 7) == 'mailto:')
 		{
-			$this->strHref = \StringUtil::encodeEmail($this->url);
-			$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['externalMailTitle'], $this->strHref);
-			$this->strLink = sprintf($this->strLink, $this->strHref);
+			$this->setHref(\StringUtil::encodeEmail($this->url));
+			$this->setTitle(sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['externalMailTitle'], $this->getHref()));
+			$this->setLink(sprintf($this->getLink(), $this->getHref()));
 		}
 		else
 		{
-			$this->strHref = ampersand($this->url);
-			$strLinkTitle = $this->getLinkTitle($this->strHref);
-			$this->strTitle = sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['externalLinkTitle'], $strLinkTitle);
-			$this->strLink = sprintf($this->strLink, $strLinkTitle);
+			$this->setHref(ampersand($this->url));
+			$strLinkTitle = $this->getLinkTitle($this->getHref());
+			$this->setTitle(sprintf($GLOBALS['TL_LANG']['MSC']['linkteaser']['externalLinkTitle'], $strLinkTitle));
+			$this->setLink(sprintf($this->getLink(), $strLinkTitle));
 		}
 
 		return true;
@@ -379,5 +395,93 @@ class ContentLinkTeaser extends \ContentText
 	protected function addContainerClass($strClass)
 	{
 		$this->arrData['cssID'][1] .= ' '. $strClass;
+	}
+
+	public function setHref($varValue)
+	{
+		$this->strHref = $varValue;
+	}
+
+	public function getHref()
+	{
+		return $this->strHref;
+	}
+
+	public function setTitle($varValue)
+	{
+		$this->strTitle = $varValue;
+	}
+
+	public function getTitle()
+	{
+		return $this->strTitle;
+	}
+
+	public function setLink($varValue)
+	{
+		$this->strLink = $varValue;
+	}
+
+	public function getLink()
+	{
+		return $this->strLink;
+	}
+
+	public function setLinkTemplate($varValue)
+	{
+		$this->linkTemplate = $varValue;
+	}
+
+	public function getLinkTemplate()
+	{
+		return $this->linkTemplate;
+	}
+
+	public function setLinkAttributes($arrData, $delimiter=" ")
+	{
+		// set from string
+		if(!is_array($arrData))
+		{
+			$arrData = trimsplit($delimiter, $arrData);
+
+			if(is_array($arrData))
+			{
+				foreach (array_keys($this->arrLinkAttributes) as $strKey)
+				{
+					$this->arrLinkAttributes[$strKey] = $arrData[$strKey];
+				}
+			}
+
+			return;
+		}
+
+		$this->arrLinkAttributes = $arrData;
+	}
+
+	public function getLinkAttributes($blnReturnString=false)
+	{
+		if(!$blnReturnString)
+		{
+			return $this->arrLinkAttributes;
+		}
+
+		$strAttributes = '';
+
+		foreach (array_keys($this->arrLinkAttributes) as $strKey)
+		{
+			$strAttributes .= sprintf('%s="%s"', $strKey, $this->arrLinkAttributes[$strKey]);
+		}
+
+		return $strAttributes;
+	}
+
+	public function addLinkAttribute($key, $value)
+	{
+		$this->arrLinkAttributes[$key] = $value;
+	}
+
+	public function removeLinkAttribute($key)
+	{
+		unset($this->arrLinkAttributes);
 	}
 }

@@ -178,8 +178,21 @@ class Content extends \Backend
 	{
 		if ($this->User->isAdmin)
 		{
-			return array('page', 'file', 'download', 'article', 'external');
+			$arrOptions = array('page', 'file', 'download', 'article', 'external');
+
+			// HOOK: extend options by callback functions
+			if (isset($GLOBALS['TL_HOOKS']['getContentSourceOptions']) && is_array($GLOBALS['TL_HOOKS']['getContentSourceOptions']))
+			{
+				foreach ($GLOBALS['TL_HOOKS']['getContentSourceOptions'] as $callback)
+				{
+					$arrOptions = \System::importStatic($callback[0])->{$callback[1]}($arrOptions, $dc);
+				}
+			}
+
+			return $arrOptions;
 		}
+
+		$arrOptions = array();
 
 		// Add the "file" and "download" option
 		if ($this->User->hasAccess('tl_content::fileSRC', 'alexf'))
@@ -204,6 +217,15 @@ class Content extends \Backend
 		if ($this->User->hasAccess('tl_content::url', 'alexf'))
 		{
 			$arrOptions[] = 'external';
+		}
+
+		// HOOK: extend options by callback functions
+		if (isset($GLOBALS['TL_HOOKS']['getContentSourceOptions']) && is_array($GLOBALS['TL_HOOKS']['getContentSourceOptions']))
+		{
+			foreach ($GLOBALS['TL_HOOKS']['getContentSourceOptions'] as $callback)
+			{
+				$arrOptions = \System::importStatic($callback[0])->{$callback[1]}($arrOptions, $dc);
+			}
 		}
 
 		// Add the option currently set

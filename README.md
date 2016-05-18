@@ -33,3 +33,12 @@ teaserLinkText | A dropdown the link text can be selected from.
 teaserLinkCssClass | A text field, to put in the css class for the link element.
 teaserLinkBehaviour | A dropdown to select the link behaviour from.
 teaserContentTemplate | Overwrite the teaser content template.
+
+
+### Hooks
+
+
+Name | Arguments | Expected return value | Description
+---- | --------- | --------------------- | -----------
+generateTeaserLink | $objElement, $showMore | $showMore | Add custom teaser source and modify the content element.
+getContentSourceOptions | $arrOptions, $dc | $arrOptions | Add custom source options to the dca.
