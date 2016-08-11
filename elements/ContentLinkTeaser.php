@@ -120,9 +120,9 @@ class ContentLinkTeaser extends \ContentText
 
 		$this->Template->linkTitle = $this->getTitle();
 		$this->Template->link = $this->getLink();
-		$this->Template->content = $this->generateContent();
-		$this->Template->linkTemplate = $this->getLinkTemplate();
 		$this->Template->linkAttributes = !empty($this->getLinkAttributes()) ? ' ' . $this->getLinkAttributes(true) : '';
+		$this->Template->linkTemplate = $this->getLinkTemplate();
+		$this->Template->content = $this->generateContent();
 
 		$this->addContainerClass($this->addImage ? 'has-image' : 'no-image');
 	}
