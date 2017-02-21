@@ -16,14 +16,16 @@
 	<?php endif; ?>
 <?php endif; ?>
 
-<div class="content<?= ($this->showMore) ? ' show-more' : ''; ?>">
-	<div class="inside">
-		<?php if ($this->headline): ?>
-			<<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
-		<?php endif; ?>
-		<div class="teaser">
-			<?= $this->text; ?>
-			<?php $this->insert($this->linkTemplate, $this->getData()); ?>
+<?php if ($this->text || $this->showMore): ?>
+	<div class="content<?= ($this->showMore) ? ' show-more' : ''; ?>">
+		<div class="inside">
+			<?php if ($this->headline): ?>
+				<<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
+			<?php endif; ?>
+			<div class="teaser">
+				<?= $this->text; ?>
+				<?php $this->insert($this->linkTemplate, $this->getData()); ?>
+			</div>
 		</div>
 	</div>
-</div>
+<?php endif; ?>
