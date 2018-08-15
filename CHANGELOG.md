@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.14] - 2018-08-15
+
+### Added
+- notice to readme to use the [teaser bundle](https://github.com/heimrichhannot/contao-teaser-bundle) if contao 4 is used.
+
 ## [1.0.13] - 2018-01-24
 
 ### Added
