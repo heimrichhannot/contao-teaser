@@ -1,5 +1,7 @@
 # Teaser
 
+> If you are using Contao 4, please use [Teaser Bundle](https://github.com/heimrichhannot/contao-teaser-bundle) instead!
+
 Teaser is a contao content element, that provides the ability to link the element with pages, articles, files, downloads and external urls.
 Can be used as replacement for ce_page_teaser. 
 
