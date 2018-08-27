@@ -25,6 +25,7 @@ $dc['palettes']['linkteaser'] = '
 								{teaser_legend},source,teaserLinkText,teaserLinkCssClass,teaserLinkBehaviour,teaserContentTemplate;
 								{text_legend},text;
 								{image_legend},addImage;
+								{xlAnimate_legend:hide},xlAnimateAdd;
 								{template_legend:hide},customTpl;
 								{protected_legend:hide},protected;
 								{expert_legend:hide},guests,cssID,space;

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2018-08-27
+
+### Added
+- support for hypergalaktisch/contao-animate
+
 ## [1.0.14] - 2018-08-15
 
 ### Added
