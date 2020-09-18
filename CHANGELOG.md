@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2020-09-18
+
+- added aria-labels
+
 ## [1.1.0] - 2018-08-27
 
 ### Added

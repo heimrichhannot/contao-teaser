@@ -1,6 +1,6 @@
 <div class="<?= $this->class; ?> block"<?= $this->cssID; ?><?php if ($this->style): ?> style="<?= $this->style; ?>"<?php endif; ?>>
 	<?php if ($this->linkAll): ?>
-		<a href="<?= $this->href; ?>" title="<?= $this->linkTitle; ?>" class="more more-section"<?= $this->target; ?><?= $this->linkAttributes; ?>>
+		<a href="<?= $this->href; ?>" title="<?= $this->linkTitle; ?>" aria-label="<?= $this->linkTitle; ?>" class="more more-section"<?= $this->target; ?><?= $this->linkAttributes; ?>>
 	<?php endif; ?>
 	<div class="inside">
 		<?= $this->content; ?>
